@@ -1,5 +1,5 @@
 public class AVLTree {
-    private IAVLNode root=null;
+    private AVLNode root=null;
     private final AVLNode EXTERNALNODE=new AVLNode(-1,null,null,null,-1);
     /**
      * public boolean empty()
@@ -19,7 +19,27 @@ public class AVLTree {
      */
     public String search(int k)
     {
-        return "searchDefaultString";  // to be replaced by student code
+        AVLNode x;
+        x = help(this.root,k);
+        if (x == null){
+            return null;
+        } else{
+            return x.getValue();
+        }
+    }
+    private AVLNode help(AVLNode x, int k){
+        while (x != null){
+            if( k == x.getKey()){
+                return x;
+            }
+            else if (k < x.getKey()){
+                x = (AVLNode) x.getLeft();
+            }
+            else{
+                x = (AVLNode) x.getRight();
+            }
+        }
+        return x;
     }
 
     /**
@@ -123,8 +143,33 @@ public class AVLTree {
      */
     public int delete(int k)
     {
-        return 421;	// to be replaced by student code
+        IAVLNode whereToInsertNode = treePosition(this.root, k); // comment that O(logn)
+        if (whereToInsertNode.getKey() == k) // if the node doesn't exist in the tree
+//            do something
+        { // if the node exists in the tree
+            if (whereToInsertNode.isLeaf()) {
+                if (whereToInsertNode.getKey() > k) {
+                    whereToInsertNode.setLeft(getdeccessor(whereToInsertNode));
+                } else {
+                    whereToInsertNode.setRight(getsuccessor(whereToInsertNode));
+                }
+            }
+            // whereToInsertNode is an Unary node
+            if (whereToInsertNode.getLeft() == null && whereToInsertNode.getRight() != null) {
+                // only right son
+                whereToInsertNode.setLeft(currNode);
+            } else {
+                whereToInsertNode.setRight(currNode);
+
+            }
+        } else {
+            return -1;
+        }
+        return rebalanceInsert(whereToInsertNode);
     }
+
+
+
 
     /**
      * public String min()
@@ -224,6 +269,10 @@ public class AVLTree {
     }
 
     private void doubleRotation(IAVLNode node, IAVLNode rightSonX) {
+    }
+    private IAVLNode getdeccessor(IAVLNode whereToInsertNode) {
+    }
+    private IAVLNode getsuccessor(IAVLNode whereToInsertNode) {
     }
 
 }
