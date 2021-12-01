@@ -13,6 +13,8 @@ public class AVLNode implements IAVLNode{
     private IAVLNode left;
     private IAVLNode right;
     private int height;
+    private int rank;
+
 
     public AVLNode(int key, String value){
         // if is leaf
@@ -21,12 +23,13 @@ public class AVLNode implements IAVLNode{
         this.height = 1;
     }
 
-    public AVLNode(int key, String value, AVLNode right, AVLNode left, int height){
+    public AVLNode(int key, String value, IAVLNode right, IAVLNode left, int height, int rank){
         this.key=key;
         this.info=value;
         this.left=left;
         this.right=right;
         this.height=height;
+        this.rank = rank;
     }
     public int getKey() {
         return this.key;
@@ -69,6 +72,13 @@ public class AVLNode implements IAVLNode{
     public int getHeight()
     {
         return this.height;
+    }
+    public int getRank() {
+        return this.rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
     public boolean isLeaf() {
         return this.getRight().getHeight() == -1 && this.getLeft().getHeight() == -1;
