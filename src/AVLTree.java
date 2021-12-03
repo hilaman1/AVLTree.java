@@ -74,42 +74,51 @@ public class AVLTree {
      * return which case are we at currently, to ease on dealing with symmetrical cases while inserting node
      */
     private String insertionCase(IAVLNode node){
+        // TODO: 03/12/2021 change the function input to parent
+        // TODO: 03/12/2021 change rankDiffNode to rankDiffParent
+        // TODO: 03/12/2021 change rankDiffParent to rank left or right child
+
+
         if (node != null && node.getParent() != null) {
             int[] rankDiffNode = rankDifference(node);
             int[] rankDiffParent = rankDifference(node.getParent());
-            if (((Arrays.equals(rankDiffNode, new int[]{1, 1}) ||
-                    (Arrays.equals(rankDiffNode, new int[]{2, 1})) ||
-                    (Arrays.equals(rankDiffNode, new int[]{1, 2})))
-                    && (Arrays.equals(rankDiffParent, new int[]{1, 0}) ||
-                    (Arrays.equals(rankDiffParent, new int[]{0, 1}))))) {
+            if ((Arrays.equals(rankDiffParent, new int[]{1, 0}) ||
+                    (Arrays.equals(rankDiffParent, new int[]{0, 1})))) {
+                // TODO: 03/12/2021 need to promote parent + return1
                 return "case1";
             }
-            if (Arrays.equals(rankDiffNode, new int[]{2, 1})
-                    && Arrays.equals(rankDiffParent, new int[]{2, 0})) { // single rotation left
+            // TODO: 03/12/2021 return 0
+            if (((Arrays.equals(rankDiffNode, new int[]{1, 1}) // after insertion it's Unary
+                    && (Arrays.equals(rankDiffParent, new int[]{1, 2}) ||
+                    (Arrays.equals(rankDiffParent, new int[]{2, 1})))))) {
+                return "caseB";
+            }
+            // TODO: 03/12/2021 single rotation right & demote z
+            if (Arrays.equals(rankDiffNode, new int[]{1, 2})
+                    && Arrays.equals(rankDiffParent, new int[]{0, 2})) {
                 return "case2left";
             }
+            // TODO: 03/12/2021  double rotation & promote/demote b,x,z & return +5
             if (Arrays.equals(rankDiffNode, new int[]{1, 2})
-                    && Arrays.equals(rankDiffParent, new int[]{0, 2})) { // single rotation right
+                    && Arrays.equals(rankDiffParent, new int[]{2, 0})) {
                 return "case2right";
             }
-
             if (Arrays.equals(rankDiffNode, new int[]{2, 1})
                     && Arrays.equals(rankDiffParent, new int[]{0, 2})) {
                 return "case3left";
             }
-            if (Arrays.equals(rankDiffNode, new int[]{1, 2})
+
+            // TODO: 03/12/2021  single rotation & demote z & return +2
+            if (Arrays.equals(rankDiffNode, new int[]{2, 1})
                     && Arrays.equals(rankDiffParent, new int[]{2, 0})) {
                 return "case3right";
             }
-            if (Arrays.equals(rankDiffNode, new int[]{1, 1})
-                    && Arrays.equals(rankDiffParent, new int[]{2, 0})) {
-                return "case4left";
-            }
-            if (Arrays.equals(rankDiffNode, new int[]{1, 1})
+            if (Arrays.equals(rankDiffNode, new int[]{1, 2})
                     && Arrays.equals(rankDiffParent, new int[]{0, 2})) {
-                return "case4right";
+                return "case2left";
             }
         }
+        // TODO: 03/12/2021 special cases for join
         return "";
     }
     /**
@@ -245,18 +254,33 @@ public class AVLTree {
     }
 
     /*
+    * gets the node we want to delete
      * return which case are we at currently, to ease on dealing with symmetrical cases
      * Supposed to be used like enums, without creating new classes
      */
-    private String DeletetionCase(IAVLNode node){
-        if (node == null){
-            return "";
+    private String DeletetionCase(IAVLNode parent){
+        int[] rankDiffParent = rankDifference(parent);
+        int[] rankDiffRChild = rankDifference(parent.getParent());
+//      leaf
+//      TODO: 03/12/2021 check if node is right or left son and replace with External node + return 0
+        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
+                (Arrays.equals(rankDiffRChild, new int[]{1, 1})))){
+            return "case0";
         }
-        int[] rankDiff = rankDifference(node);
-//      calculating in which case are we
-        if (Arrays.equals(rankDiff, new int[]{2, 2})){ // leaf
+        //      TODO: 03/12/2021 check if node is right or left son and replace with External node + demote parent
+        //      TODO: 03/12/2021 return 1 + rebalance (parent)
+        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
+                ((Arrays.equals(rankDiffRChild, new int[]{1, 2}))||(Arrays.equals(rankDiffRChild, new int[]{2, 1}))))){
             return "case1";
         }
+        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
+                ((Arrays.equals(rankDiffRChild, new int[]{1, 2}))||(Arrays.equals(rankDiffRChild, new int[]{2, 1}))))){
+            return "case1";
+        }
+
+
+
+
         //        symmetric cases for right nodes
         if (node.getRight().isRealNode()){
             int[] rankDiffRChild = rankDifference(node.getRight());
