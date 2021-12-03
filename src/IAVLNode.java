@@ -15,6 +15,4 @@ public interface IAVLNode{
     public void setHeight(int height); // Sets the height of the node.
     public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
     boolean isLeaf();
-    public void setRank(int rank);
-    public int getRank();
 }

@@ -148,7 +148,7 @@ public class AVLTree {
    }
 
    /**
-    * public String max()
+    * public String maxNode()
     *
     * Returns the info of the item with the largest key in the tree,
     * or null if the tree is empty.
