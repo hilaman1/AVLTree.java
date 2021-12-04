@@ -74,11 +74,7 @@ public class AVLTree {
      * return which case are we at currently, to ease on dealing with symmetrical cases while inserting node
      */
     private String insertionCase(IAVLNode node){
-        // TODO: 03/12/2021 change the function input to parent
-        // TODO: 03/12/2021 change rankDiffNode to rankDiffParent
-        // TODO: 03/12/2021 change rankDiffParent to rank left or right child
-
-
+        // TODO: 04/12/2021 input is parent, no need to change because we call rebalance on parent = node
         if (node != null && node.getParent() != null) {
             int[] rankDiffNode = rankDifference(node);
             int[] rankDiffParent = rankDifference(node.getParent());
@@ -118,6 +114,7 @@ public class AVLTree {
                 return "case2left";
             }
         }
+        // TODO: 04/12/2021 rebalance parent when needed
         // TODO: 03/12/2021 special cases for join
         return "";
     }
@@ -259,6 +256,7 @@ public class AVLTree {
      * Supposed to be used like enums, without creating new classes
      */
     private String DeletetionCase(IAVLNode parent){
+        // TODO: 04/12/2021 no need to change here
         int[] rankDiffParent = rankDifference(parent);
         int[] rankDiffRChild = rankDifference(parent.getParent());
 //      leaf
