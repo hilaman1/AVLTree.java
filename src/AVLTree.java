@@ -255,7 +255,7 @@ public class AVLTree {
      * return which case are we at currently, to ease on dealing with symmetrical cases
      * Supposed to be used like enums, without creating new classes
      */
-    private String DeletetionCase(IAVLNode parent) {
+    private String deletetionCase(IAVLNode parent) {
         // TODO: 04/12/2021 check cases of right / left child outside
         // TODO: 04/12/2021 create arrays one time in order to save in space complexity
         int[] rankDiffParent = rankDifference(parent);
@@ -349,41 +349,73 @@ public class AVLTree {
                 this.root = null;
                 return 0;
             } else {
-                if (nodeToDelete.isLeaf()){ // case 1
-                   deleteLeaf(nodeToDelete);
-                   demote(parent);
-                   // no need to rebalance
+                if(nodeToDelete.isLeaf()){
+                    deleteLeaf(nodeToDelete);
+                    if (parent!=null){
+                        reSize(parent,-1);
+                    }
+                    return rebalanceDelete(parent);
                 }else {
-                    int parentRankDiffRight = parent.getHeight() - parent.getRight().getHeight();
-                    int parentDiffLeft = parent.getHeight() - parent.getLeft().getHeight();
-                    int delRankDiffRight = nodeToDelete.getHeight() - nodeToDelete.getRight().getHeight();
-                    int delentDiffLeft = nodeToDelete.getHeight() - nodeToDelete.getLeft().getHeight();
-                    if ((parentRankDiffRight == 3 && parentDiffLeft == 1) && (delentDiffLeft == 1 && delRankDiffRight == 1)) { // case 2
-                        singleRightRotation(parent, parent.getRight());
-                        demote(parent);
-                        return 2;
-
-                        // + recursion
+                    if (isUnary(nodeToDelete)){
+                        deleteUnary(nodeToDelete);
+                        if (parent!=null){
+                            reSize(parent,-1);
+                        }
+                        return rebalanceDelete(parent);
+                    }else {
+                        IAVLNode replace = replaceWithSuccessor(nodeToDelete);
+                        if (replace!=null){
+                            reSize(replace, -1);
+                        }
+                        return rebalanceDelete(replace);
                     }
-                    if ((parentRankDiffRight == 3 && parentDiffLeft == 1) && (delentDiffLeft == 2 && delRankDiffRight == 1)) { // case 3
-                        singleRightRotation(parent, parent.getRight());
-                        demote(parent);
-                        demote(parent);
-                        return 3;
-                        // + recursion
-                    }
-                    if ((parentRankDiffRight == 3 && parentDiffLeft == 1) && (delentDiffLeft == 1 && delRankDiffRight == 2)) { // case 3
-                        singleLeftRotation(nodeToDelete, nodeToDelete.getLeft());
-                        singleRightRotation(nodeToDelete, nodeToDelete.getRight());
-                        demote(nodeToDelete.getRight());
-                        promote(parent);
-                        return 4;
-                        // + recursion
-                    }
-
                 }
             }
         }
+    }
+
+    private IAVLNode findSuccessor(IAVLNode nodeToDelete) {
+        if (nodeToDelete.getRight().isRealNode()) {
+            IAVLNode successor = nodeToDelete.getRight();
+            while (successor.getLeft() != null) {
+                successor = successor.getLeft();
+            }
+            return successor;
+        }else{
+            IAVLNode successor = nodeToDelete.getParent();
+            while (nodeToDelete!=null){
+                if (nodeToDelete.getKey()>successor.getKey()){
+                    return successor;
+                }
+                successor = successor.getParent();
+            }
+        }
+        return null;
+    }
+
+    private boolean isUnary(IAVLNode nodeToDelete) {
+        return ((!nodeToDelete.getRight().isRealNode()) && nodeToDelete.getLeft().isRealNode()) ||
+                (!nodeToDelete.getRight().isRealNode() && nodeToDelete.getLeft().isRealNode());
+    }
+
+    /**
+     * resize from node to root
+     * i = -1 if we delete
+     * i = 1 if we insert
+     */
+    private void reSize(IAVLNode parent, int i) {
+        while(parent != null) {
+            parent.setSize(parent.getSize() + i);
+            parent = parent.getParent();
+        }
+    }
+
+    /**
+     * recalculate Height from node to root
+     * */
+    public static void reHeight(IAVLNode parent) {
+        int maxHeight = Math.max(parent.getLeft().getHeight(), parent.getRight().getHeight());
+        parent.setHeight(maxHeight+1);
     }
 
     private void deleteUnary(IAVLNode nodeToDelete) {
@@ -422,7 +454,42 @@ public class AVLTree {
     }
 
 
-    private void replaceWithSuccessor(IAVLNode nodeToDelete) {
+    private IAVLNode replaceWithSuccessor(IAVLNode nodeToDelete) {
+        IAVLNode parent = nodeToDelete.getParent();
+        IAVLNode successor = findSuccessor(nodeToDelete);
+        IAVLNode srParent = successor.getParent();
+
+        if (nodeToDelete != srParent) {
+            //successor is not right child of nodeToDelete
+            nodeToDelete.getRight().setParent(successor);
+            if (successor.getRight().isRealNode()) {
+                srParent.setLeft(successor.getRight());
+                successor.getRight().setParent(srParent);
+            }else {
+                srParent.setLeft(EXTERNALNODE);
+            }
+            successor.setRight(nodeToDelete.getRight());
+        }
+
+        nodeToDelete.getLeft().setParent(successor);
+        successor.setLeft(nodeToDelete.getLeft());
+        successor.setHeight(nodeToDelete.getHeight());
+        successor.setSize(nodeToDelete.getSize());
+        successor.setParent(parent);
+
+        if (parent == null) { //nodeToDelete is root
+            this.root = successor;
+        } else {
+            if (parent.getRight() == nodeToDelete) {
+                parent.setRight(successor);
+            } else {
+                parent.setLeft(successor);
+            }
+        }
+        if (nodeToDelete == srParent) { //successor is right child
+            return successor;
+        }
+        return srParent;
     }
 
     private int rebalanceDelete(IAVLNode nodeToDelete) {

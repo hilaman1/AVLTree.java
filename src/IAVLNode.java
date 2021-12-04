@@ -14,5 +14,7 @@ public interface IAVLNode{
     public boolean isRealNode(); // Returns True if this is a non-virtual AVL node.
     public void setHeight(int height); // Sets the height of the node.
     public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
-    boolean isLeaf();
+    public boolean isLeaf();
+    public int getSize();
+    public void setSize(int size);
 }

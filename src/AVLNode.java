@@ -13,7 +13,15 @@ public class AVLNode implements IAVLNode{
     private IAVLNode left;
     private IAVLNode right;
     private int height;
+    private int size;
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 
     public AVLNode(int key, String value){
         // if is leaf
