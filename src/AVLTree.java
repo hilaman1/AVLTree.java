@@ -255,61 +255,61 @@ public class AVLTree {
      * return which case are we at currently, to ease on dealing with symmetrical cases
      * Supposed to be used like enums, without creating new classes
      */
-    private String DeletetionCase(IAVLNode parent){
-        // TODO: 04/12/2021 no need to change here
+    private String DeletetionCase(IAVLNode parent) {
+        // TODO: 04/12/2021 check cases of right / left child outside
+        // TODO: 04/12/2021 create arrays one time in order to save in space complexity
         int[] rankDiffParent = rankDifference(parent);
-        int[] rankDiffRChild = rankDifference(parent.getParent());
-//      leaf
+        int[] rankDiffRChild = rankDifference(parent.getRight());
+        int[] rankDiffLChild = rankDifference(parent.getLeft());
+
 //      TODO: 03/12/2021 check if node is right or left son and replace with External node + return 0
-        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
-                (Arrays.equals(rankDiffRChild, new int[]{1, 1})))){
+        if ((Arrays.equals(rankDiffParent, new int[]{2, 1}) || (Arrays.equals(rankDiffParent, new int[]{1, 2})) &&
+                (parent.getLeft().isRealNode() && !parent.getRight().isRealNode()) ||
+                (!parent.getLeft().isRealNode() && parent.getRight().isRealNode()))) {
             return "case0";
         }
-        //      TODO: 03/12/2021 check if node is right or left son and replace with External node + demote parent
-        //      TODO: 03/12/2021 return 1 + rebalance (parent)
-        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
-                ((Arrays.equals(rankDiffRChild, new int[]{1, 2}))||(Arrays.equals(rankDiffRChild, new int[]{2, 1}))))){
-            return "case1";
+        //      TODO: 03/12/2021 rotation left on z-y, promote(y) demote(z)
+        //      TODO: 03/12/2021 return 3 + rebalance (parent)
+        //      parent is Unary
+        if (((Arrays.equals(rankDiffParent, new int[]{3, 1}) &&
+                (parent.getRight().isRealNode()) && (!parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffRChild, new int[]{1, 1}))))) {
+            return "case2right";
         }
-        if ((Arrays.equals(rankDiffParent, new int[]{1, 1}) &&
-                ((Arrays.equals(rankDiffRChild, new int[]{1, 2}))||(Arrays.equals(rankDiffRChild, new int[]{2, 1}))))){
-            return "case1";
+        //      TODO: 03/12/2021 rotation right on z-y, promote(y) demote(z)
+        //      TODO: 03/12/2021 return 3 + rebalance (parent)
+        if (((Arrays.equals(rankDiffParent, new int[]{1, 3}) &&
+                (!parent.getRight().isRealNode()) && (parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffLChild, new int[]{1, 1}))))) {
+            return "case2left";
         }
-
-
-
-
-        //        symmetric cases for right nodes
-        if (node.getRight().isRealNode()){
-            int[] rankDiffRChild = rankDifference(node.getRight());
-            if (Arrays.equals(rankDiff, new int[]{3, 1}) &&
-                    Arrays.equals(rankDiffRChild, new int[]{1, 1})) {
-                return "case2left";
-            }
-            if (Arrays.equals(rankDiff, new int[]{3, 1}) &&
-                    Arrays.equals(rankDiffRChild, new int[]{1, 2})) {
-                return "case4left";
-            }
-            if (Arrays.equals(rankDiff, new int[]{3, 1}) &&
-                    Arrays.equals(rankDiffRChild, new int[]{2, 1})) {
-                return "case3left";
-            }
+        //      TODO: 03/12/2021 rotation left on z-y, 2xdemote(z)
+        //      TODO: 03/12/2021 return 3 + rebalance (parent)
+        if (((Arrays.equals(rankDiffParent, new int[]{3, 1}) &&
+                (parent.getRight().isRealNode()) && (!parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffRChild, new int[]{2, 1}))))) {
+            return "case3right";
         }
-//        symmetric cases for left nodes
-        if(node.getLeft().isRealNode()){
-            int[] rankDiffLChild = rankDifference(node.getLeft());
-            if (Arrays.equals(rankDiff, new int[]{1, 3}) &&
-                    Arrays.equals(rankDiffLChild, new int[]{1, 1})) {
-                return "case2right";
-            }
-            if (Arrays.equals(rankDiff, new int[]{1, 3}) &&
-                    Arrays.equals(rankDiffLChild, new int[]{1, 2})) {
-                return "case3right";
-            }
-            if (Arrays.equals(rankDiff, new int[]{1, 3}) &&
-                    Arrays.equals(rankDiffLChild, new int[]{2, 1})) {
-                return "case4right";
-            }
+        //      TODO: 03/12/2021 rotation right on z-y, 2xdemote(z)
+        //      TODO: 03/12/2021 return 3 + rebalance (parent)
+        if (((Arrays.equals(rankDiffParent, new int[]{1, 3}) &&
+                (!parent.getRight().isRealNode()) && (parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffLChild, new int[]{1, 2}))))) {
+            return "case3left";
+        }
+        //      TODO: 03/12/2021 rotation right on y-a, rotation left on a-z, 2xdemote(z), demote(y), promote(a)
+        //      TODO: 03/12/2021 return 6 + rebalance (parent)
+        if (((Arrays.equals(rankDiffParent, new int[]{3, 1}) &&
+                (parent.getRight().isRealNode()) && (!parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffRChild, new int[]{1, 2}))))) {
+            return "case4right";
+        }
+        //      TODO: 03/12/2021 rotation left on y-a, rotation right on a-z, 2xdemote(z), demote(y), promote(a)
+        //      TODO: 03/12/2021 return 6 + rebalance (parent)
+        if (((Arrays.equals(rankDiffParent, new int[]{1, 3}) &&
+                (!parent.getRight().isRealNode()) && (parent.getLeft().isRealNode()) &&
+                (Arrays.equals(rankDiffLChild, new int[]{2, 1}))))) {
+            return "case4left";
         }
         return "";
     }
