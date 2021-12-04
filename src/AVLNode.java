@@ -12,8 +12,8 @@ public class AVLNode implements IAVLNode{
     private IAVLNode parent;
     private IAVLNode left;
     private IAVLNode right;
-    private int height;
-    private int size;
+    private int height = - 1;
+    private int size = 0;
 
     public AVLNode(int key, String value){
         // if is leaf
@@ -22,12 +22,13 @@ public class AVLNode implements IAVLNode{
         this.height = 1;
     }
 
-    public AVLNode(int key, String value, AVLNode right, AVLNode left, int height){
+    public AVLNode(int key, String value, IAVLNode right, IAVLNode left, int height, int size){
         this.key=key;
         this.info=value;
         this.left=left;
         this.right=right;
         this.height=height;
+        this.size = size;
     }
 
     // TODO: 04/12/2021 update constructor for ExtrenalLeaf
